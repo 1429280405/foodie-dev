@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     public boolean queryUsernameIsExist(String username) {
         Example example = new Example(Users.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.orEqualTo("username", username);
+        criteria.andEqualTo("username", username);
         Users users = usersMapper.selectOneByExample(example);
         return users == null ? false : true;
     }
@@ -55,6 +55,16 @@ public class UserServiceImpl implements UserService {
         users.setCreatedTime(new Date());
         users.setUpdatedTime(new Date());
         usersMapper.insert(users);
+        return users;
+    }
+
+    @Override
+    public Users queryUsersForLogin(String username, String password) {
+        Example example = new Example(Users.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("username", username);
+        criteria.andEqualTo("password", password);
+        Users users = usersMapper.selectOneByExample(example);
         return users;
     }
 }

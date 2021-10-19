@@ -1,5 +1,7 @@
 package com.imooc.pojo.bo;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -9,11 +11,12 @@ import javax.validation.constraints.NotBlank;
  * @create 2021-10-13 15:06
  */
 @Data
+@ApiModel(value = "用户对象BO",description = "客户端传入用户数据封装在此entity中")
 public class UserBO {
-    @NotBlank(message = "用户名不能为空")
+    @ApiModelProperty(value = "用户名",name = "username",example = "imooc",required = true)
     private String username;
-    @NotBlank(message = "密码不能为空")
+    @ApiModelProperty(value = "密码",name = "password",example = "123456",required = true)
     private String password;
-    @NotBlank(message = "密码校验不能为空")
+    @ApiModelProperty(value = "确认密码",name = "confirmPassword",example = "123456",required = false)
     private String confirmPassword;
 }

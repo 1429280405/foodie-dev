@@ -1,8 +1,12 @@
 package com.imooc.controller;
 
+import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
 import com.imooc.service.UserService;
 import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.MD5Utils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
@@ -16,6 +20,7 @@ import javax.validation.constraints.NotBlank;
  * @author liujq
  * @create 2021-10-13 9:41
  */
+@Api(value = "注册登录", tags = {"用户注册登录接口"})
 @RestController
 @RequestMapping("/passport")
 public class PassportController extends BaseController {
@@ -23,6 +28,7 @@ public class PassportController extends BaseController {
     @Autowired
     private UserService userService;
 
+    @ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
     @GetMapping("/usernameIsExist")
     public IMOOCJSONResult usernameIsExist(String username) {
         if (StringUtils.isEmpty(username)) {
@@ -35,13 +41,9 @@ public class PassportController extends BaseController {
         return IMOOCJSONResult.ok();
     }
 
+    @ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
     @PostMapping("/regist")
-    public IMOOCJSONResult regist(@RequestBody @Valid UserBO userBO,
-                                  BindingResult result) {
-        //校验参数
-        if (result.hasErrors()) {
-            return IMOOCJSONResult.errorMap(getErrors(result));
-        }
+    public IMOOCJSONResult regist(@RequestBody UserBO userBO) {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPassword = userBO.getConfirmPassword();
@@ -61,6 +63,23 @@ public class PassportController extends BaseController {
         }
         //入库
         userService.createUser(userBO);
+        return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "GET")
+    @PostMapping("/login")
+    public IMOOCJSONResult login(@RequestBody UserBO userBO) {
+        String username = userBO.getUsername();
+        String password = userBO.getPassword();
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return IMOOCJSONResult.errorMsg("用户名密码不能为空!");
+        }
+
+        //用户登录
+        Users users = userService.queryUsersForLogin(username, MD5Utils.toMD5(password));
+        if (users == null) {
+            return IMOOCJSONResult.errorMsg("用户名密码不正确！");
+        }
         return IMOOCJSONResult.ok();
     }
 }
