@@ -2,6 +2,8 @@ package com.imooc.pojo.vo;
 
 import lombok.Data;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.List;
 
 /**
@@ -9,9 +11,11 @@ import java.util.List;
  * @create 2021-10-21 16:59
  * 二级分类VO
  */
+@Entity
 @Data
 public class CategoryVO {
 
+    @Id
     private Integer id;
     private String name;
     private String type;

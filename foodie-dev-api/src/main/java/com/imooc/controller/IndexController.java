@@ -5,6 +5,7 @@ import com.imooc.pojo.Carousel;
 import com.imooc.pojo.Category;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
+import com.imooc.pojo.vo.CategoryVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
 import com.imooc.service.UserService;
@@ -13,6 +14,7 @@ import com.imooc.utils.JsonUtils;
 import com.imooc.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -50,5 +52,17 @@ public class IndexController extends BaseController {
     public IMOOCJSONResult cats() {
         List<Category> categories = categoryService.queryAllRootCat();
         return IMOOCJSONResult.ok(categories);
+    }
+
+    @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
+    @GetMapping("/subCat/{rootCatId}")
+    public IMOOCJSONResult subCat(
+            @ApiParam(name = "rootCatId", value = "一级分类id", required = true)
+            @PathVariable Integer rootCatId) {
+        if (rootCatId == null) {
+            return IMOOCJSONResult.errorMsg("分类id不能为空！");
+        }
+        List<CategoryVO> catList = categoryService.getSubCatList(rootCatId);
+        return IMOOCJSONResult.ok(catList);
     }
 }
