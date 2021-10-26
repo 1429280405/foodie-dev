@@ -6,6 +6,7 @@ import com.imooc.pojo.Category;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.UserBO;
 import com.imooc.pojo.vo.CategoryVO;
+import com.imooc.pojo.vo.CommentLevelCountsVO;
 import com.imooc.pojo.vo.NewItemsVO;
 import com.imooc.service.CarouselService;
 import com.imooc.service.CategoryService;
@@ -78,4 +79,5 @@ public class IndexController extends BaseController {
         List<NewItemsVO> list = categoryService.getSixNewItemsLazy(rootCatId);
         return IMOOCJSONResult.ok(list);
     }
+
 }

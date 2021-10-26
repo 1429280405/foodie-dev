@@ -4,8 +4,10 @@ import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
+import com.imooc.pojo.vo.CommentLevelCountsVO;
 import com.imooc.pojo.vo.ItemInfoVO;
 import com.imooc.pojo.vo.NewItemsVO;
+import com.imooc.service.CategoryService;
 import com.imooc.service.ItemService;
 import com.imooc.utils.IMOOCJSONResult;
 import io.swagger.annotations.Api;
@@ -14,10 +16,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,6 +32,9 @@ public class ItemsController {
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @ApiOperation(value = "查询商品明细", notes = "查询商品明细", httpMethod = "GET")
     @GetMapping("/info/{itemId}")
@@ -50,6 +52,18 @@ public class ItemsController {
         infoVO.setItemParam(itemsParam);
         infoVO.setItemSpecList(itemsSpecs);
         return IMOOCJSONResult.ok(infoVO);
+    }
+
+    @ApiOperation(value = "查询商品评价等级", notes = "查询商品评价等级", httpMethod = "GET")
+    @GetMapping("/commentLevel")
+    public IMOOCJSONResult commentLevel(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @RequestParam String itemId) {
+        if (itemId == null) {
+            return IMOOCJSONResult.errorMsg("分类id不能为空！");
+        }
+        CommentLevelCountsVO countsVO = categoryService.queryCommentLevel(itemId);
+        return IMOOCJSONResult.ok(countsVO);
     }
 
 }
