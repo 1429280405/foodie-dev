@@ -10,6 +10,7 @@ import com.imooc.pojo.vo.NewItemsVO;
 import com.imooc.service.CategoryService;
 import com.imooc.service.ItemService;
 import com.imooc.utils.IMOOCJSONResult;
+import com.imooc.utils.PagedGridResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -64,6 +65,24 @@ public class ItemsController {
         }
         CommentLevelCountsVO countsVO = categoryService.queryCommentLevel(itemId);
         return IMOOCJSONResult.ok(countsVO);
+    }
+
+    @ApiOperation(value = "查询商品评论", notes = "查询商品评论", httpMethod = "GET")
+    @GetMapping("/commons")
+    public IMOOCJSONResult commons(
+            @ApiParam(name = "itemId", value = "商品id", required = true)
+            @RequestParam String itemId,
+            @ApiParam(name = "level", value = "商品级别", required = false)
+            @RequestParam Integer level,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false, defaultValue = "1")
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "页面显示数量", required = false, defaultValue = "10")
+            @RequestParam Integer pageSize) {
+        if (itemId == null) {
+            return IMOOCJSONResult.errorMsg("分类id不能为空！");
+        }
+        PagedGridResult gridResult = itemService.queryPagedComments(itemId, level, page, pageSize);
+        return IMOOCJSONResult.ok(gridResult);
     }
 
 }
