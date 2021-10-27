@@ -22,4 +22,7 @@ public interface ItemService {
     public ItemsParam queryItemsParamById(String itemId);
 
     public PagedGridResult queryPagedComments(String itemid, Integer level, Integer page, Integer pageSize);
+
+    public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
+
 }

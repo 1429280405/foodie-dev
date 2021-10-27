@@ -2,6 +2,7 @@ package com.imooc.mapper;
 
 
 import com.imooc.pojo.vo.ItemCommentVO;
+import com.imooc.pojo.vo.SearchItemsVO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -9,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public interface ItemsMapperCustomer{
+public interface ItemsMapperCustomer {
 
-    public List<ItemCommentVO> queryItemComments(@Param("paramsMap") Map<String,Object> map);
+    public List<ItemCommentVO> queryItemComments(@Param("paramsMap") Map<String, Object> map);
+
+    public List<SearchItemsVO> searchItems(@Param("paramsMap") Map<String, Object> map);
 
 }

@@ -8,6 +8,7 @@ import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.ItemCommentVO;
+import com.imooc.pojo.vo.SearchItemsVO;
 import com.imooc.service.ItemService;
 import com.imooc.utils.PagedGridResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,16 @@ public class ItemServiceImpl implements ItemService {
         List<ItemCommentVO> list = itemsMapperCustomer.queryItemComments(map);
         PagedGridResult gridResult = setPageGrid(list, page);
         return gridResult;
+    }
+
+    @Override
+    public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("keywords", keywords);
+        map.put("sort", sort);
+        PageHelper.startPage(page, pageSize);
+        List<SearchItemsVO> searchItems = itemsMapperCustomer.searchItems(map);
+        return setPageGrid(searchItems, page);
     }
 
     private PagedGridResult setPageGrid(List<?> list, Integer page) {

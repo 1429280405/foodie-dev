@@ -85,4 +85,22 @@ public class ItemsController {
         return IMOOCJSONResult.ok(gridResult);
     }
 
+
+    @ApiOperation(value = "搜索商品列表", notes = "搜索商品列表", httpMethod = "GET")
+    @GetMapping("/search")
+    public IMOOCJSONResult commons(
+            @ApiParam(name = "keywords", value = "搜索关键字", required = true)
+            @RequestParam String keywords,
+            @ApiParam(name = "sort", value = "排序", required = false)
+            @RequestParam String sort,
+            @ApiParam(name = "page", value = "查询下一页的第几页", required = false, defaultValue = "1")
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "页面显示数量", required = false, defaultValue = "20")
+            @RequestParam Integer pageSize) {
+        if (keywords == null) {
+            return IMOOCJSONResult.errorMsg("");
+        }
+        PagedGridResult gridResult = itemService.searchItems(keywords, sort, page, pageSize);
+        return IMOOCJSONResult.ok(gridResult);
+    }
 }
