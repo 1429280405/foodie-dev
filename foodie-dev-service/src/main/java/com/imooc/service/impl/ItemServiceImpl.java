@@ -2,6 +2,7 @@ package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.*;
 import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
@@ -105,6 +106,22 @@ public class ItemServiceImpl implements ItemService {
         List<String> specIdList = new ArrayList<>();
         Collections.addAll(specIdList, ids);
         return itemsMapperCustomer.queryItemsBySpecIds(specIdList);
+    }
+
+    @Override
+    public ItemsSpec queryItemsSpecById(String itemSpecId) {
+        ItemsSpec itemsSpec = new ItemsSpec();
+        itemsSpec.setId(itemSpecId);
+        return itemsSpecMapper.selectOne(itemsSpec);
+    }
+
+    @Override
+    public String queryItemMainImgById(String itemId) {
+        ItemsImg itemsImg = new ItemsImg();
+        itemsImg.setId(itemId);
+        itemsImg.setIsMain(YesOrNo.YES.type);
+        ItemsImg img = itemsImgMapper.selectOne(itemsImg);
+        return img.getUrl() != null ? img.getUrl() : "";
     }
 
     private PagedGridResult setPageGrid(List<?> list, Integer page) {

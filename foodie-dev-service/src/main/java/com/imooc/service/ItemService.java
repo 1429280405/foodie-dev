@@ -27,4 +27,8 @@ public interface ItemService {
     public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize);
 
     public List<ShopcartVO> queryItemsBySpecIds(String specIds);
+
+    ItemsSpec queryItemsSpecById(String itemSpecId);
+
+    String queryItemMainImgById(String itemId);
 }
