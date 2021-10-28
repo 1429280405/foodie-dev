@@ -77,7 +77,7 @@
         ON t_items_img.item_id = t_items.id
         WHERE t_items_img.is_main = 1
         AND t_items_spec.id IN
-        <foreach collection="paramsList" index="index" item="specId" open="<" separator="," close=">">
+        <foreach collection="paramsList" index="index" item="specId" open="&lt;" separator="," close=">">
             #{specId}
         </foreach>
     </select>
