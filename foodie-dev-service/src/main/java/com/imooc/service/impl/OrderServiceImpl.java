@@ -1,7 +1,9 @@
 package com.imooc.service.impl;
 
+import com.imooc.enums.OrderStatusEnum;
 import com.imooc.enums.YesOrNo;
 import com.imooc.mapper.OrderItemsMapper;
+import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
 import com.imooc.pojo.*;
 import com.imooc.pojo.bo.SubmitOrderBO;
@@ -11,6 +13,8 @@ import com.imooc.service.OrderService;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 
@@ -36,8 +40,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrdersMapper ordersMapper;
 
+    @Autowired
+    private OrderStatusMapper orderStatusMapper;
+
     @Override
-    public void createOrder(SubmitOrderBO submitOrderBO) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public String createOrder(SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -60,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
                 address.getDetail());
         newOrder.setPostAmount(postAmount);
         newOrder.setLeftMsg(leftMsg);
+        newOrder.setPayMethod(Integer.valueOf(payMethod));
         newOrder.setIsComment(YesOrNo.NO.type);
         newOrder.setIsDelete(YesOrNo.NO.type);
         newOrder.setCreatedTime(new Date());
@@ -96,11 +105,22 @@ public class OrderServiceImpl implements OrderService {
             orderItems.setItemSpecName(itemsSpec.getName());
             orderItems.setPrice(itemsSpec.getPriceDiscount());
             orderItemsMapper.insert(orderItems);
+
+            //减库存
+            itemService.decreaseItemSpecStock(buyCounts, itemsSpec.getId());
         }
 
         newOrder.setTotalAmount(totalAmount);
         newOrder.setRealPayAmount(realPayAmount);
         ordersMapper.insert(newOrder);
 
+        //保存订单状态表
+        OrderStatus orderStatus = new OrderStatus();
+        orderStatus.setOrderId(orderId);
+        orderStatus.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        orderStatus.setCreatedTime(new Date());
+        orderStatusMapper.insert(orderStatus);
+
+        return orderId;
     }
 }

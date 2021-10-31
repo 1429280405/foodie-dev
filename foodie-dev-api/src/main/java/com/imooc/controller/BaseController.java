@@ -18,6 +18,8 @@ import java.util.Map;
  */
 public class BaseController {
     public static final Integer COOKIE_DELETE = 0;
+    public static final String FOODIE_SHOPCART = "shopcart";
+
 
     public Map<String, String> getErrors(BindingResult result) {
         Map<String, String> map = new HashMap<>();

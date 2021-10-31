@@ -5,6 +5,7 @@ import com.imooc.pojo.bo.UserBO;
 import com.imooc.pojo.vo.ItemCommentVO;
 import com.imooc.pojo.vo.ShopcartVO;
 import com.imooc.utils.PagedGridResult;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -31,4 +32,7 @@ public interface ItemService {
     ItemsSpec queryItemsSpecById(String itemSpecId);
 
     String queryItemMainImgById(String itemId);
+
+    public void decreaseItemSpecStock(int pendingCounts, String specId);
+
 }

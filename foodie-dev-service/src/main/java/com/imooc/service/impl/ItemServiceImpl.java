@@ -124,6 +124,14 @@ public class ItemServiceImpl implements ItemService {
         return img.getUrl() != null ? img.getUrl() : "";
     }
 
+    @Override
+    public void decreaseItemSpecStock(int pendingCounts, String specId) {
+        int result = itemsMapperCustomer.decreaseItemSpecStock(pendingCounts, specId);
+        if (result != 1) {
+            throw new RuntimeException("更新库存失败！");
+        }
+    }
+
     private PagedGridResult setPageGrid(List<?> list, Integer page) {
         PageInfo<?> pageList = new PageInfo<>(list);
         PagedGridResult grid = new PagedGridResult();
