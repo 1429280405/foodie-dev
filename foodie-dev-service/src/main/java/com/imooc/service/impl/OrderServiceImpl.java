@@ -7,6 +7,7 @@ import com.imooc.mapper.OrderStatusMapper;
 import com.imooc.mapper.OrdersMapper;
 import com.imooc.pojo.*;
 import com.imooc.pojo.bo.SubmitOrderBO;
+import com.imooc.pojo.vo.OrderVO;
 import com.imooc.service.AddressService;
 import com.imooc.service.ItemService;
 import com.imooc.service.OrderService;
@@ -45,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public String createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
         String userId = submitOrderBO.getUserId();
         String addressId = submitOrderBO.getAddressId();
         String itemSpecIds = submitOrderBO.getItemSpecIds();
@@ -121,6 +122,24 @@ public class OrderServiceImpl implements OrderService {
         orderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(orderStatus);
 
-        return orderId;
+        //构建商户订单，用于传给支付中心
+        OrderVO orderVO = new OrderVO();
+        orderVO.setMerchantOrderId(orderId);
+        orderVO.setMerchantUserId(userId);
+        orderVO.setAmount(realPayAmount + postAmount);
+        orderVO.setPayMethod(Integer.valueOf(payMethod));
+        orderVO.setOrderId(orderId);
+        return orderVO;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateOrderStatus(String orderId, Integer orderStatus) {
+        OrderStatus paidStatus = new OrderStatus();
+        paidStatus.setOrderId(orderId);
+        paidStatus.setOrderStatus(orderStatus);
+        paidStatus.setPayTime(new Date());
+
+        orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
     }
 }

@@ -1,5 +1,6 @@
 package com.imooc.controller;
 
+import com.imooc.enums.OrderStatusEnum;
 import com.imooc.pojo.bo.ShopcartBO;
 import com.imooc.pojo.bo.SubmitOrderBO;
 import com.imooc.service.OrderService;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,10 +41,22 @@ public class OrdersController extends BaseController {
         if (submitOrderBO == null) {
             return IMOOCJSONResult.errorMsg("");
         }
-        String orderId = orderService.createOrder(submitOrderBO);
+        String orderId = orderService.createOrder(submitOrderBO).getOrderId();
         //TODO 整合redis后，完善购物车中的已结算商品清除，并且同步到前端的cookie
         CookieUtil.set(response, FOODIE_SHOPCART, "", 0);
         return IMOOCJSONResult.ok(orderId);
+    }
+
+    @ApiOperation(value = "支付通知", notes = "支付通知", httpMethod = "POST")
+    @PostMapping("/notifyMerchantOrderPaid")
+    public Integer notifyMerchantOrderPaid(
+            @ApiParam(name = "orderId", value = "订单id")
+                    String orderId) {
+        if (orderId == null) {
+            return HttpStatus.INTERNAL_SERVER_ERROR.value();
+        }
+        orderService.updateOrderStatus(orderId, OrderStatusEnum.WAIT_DELIVER.type);
+        return HttpStatus.OK.value();
     }
 
 

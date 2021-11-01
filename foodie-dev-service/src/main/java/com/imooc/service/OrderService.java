@@ -1,6 +1,7 @@
 package com.imooc.service;
 
 import com.imooc.pojo.bo.SubmitOrderBO;
+import com.imooc.pojo.vo.OrderVO;
 
 /**
  * @author liujinqiang
@@ -8,6 +9,8 @@ import com.imooc.pojo.bo.SubmitOrderBO;
  */
 public interface OrderService {
 
-    public String createOrder(SubmitOrderBO submitOrderBO);
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO);
+
+    public void updateOrderStatus(String orderId, Integer orderStatus);
 
 }
